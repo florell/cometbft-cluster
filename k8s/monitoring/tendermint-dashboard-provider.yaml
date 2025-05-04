@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: tendermint-dashboards-provider
+  namespace: monitoring
+data:
+  dashboards.yaml: |
+    apiVersion: 1
+    providers:
+      - name: 'tendermint'
+        folder: 'Tendermint'
+        type: file
+        options:
+          path: /var/lib/grafana/dashboards/tendermint

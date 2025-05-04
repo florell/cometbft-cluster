@@ -1,0 +1,64 @@
+{
+  "genesis_time": "2025-05-01T13:37:00.738986673Z",
+  "chain_id": "dockerchain",
+  "initial_height": "0",
+  "consensus_params": {
+    "block": {
+      "max_bytes": "22020096",
+      "max_gas": "-1",
+      "time_iota_ms": "500"
+    },
+    "evidence": {
+      "max_age_num_blocks": "100000",
+      "max_age_duration": "172800000000000",
+      "max_bytes": "1048576"
+    },
+    "validator": {
+      "pub_key_types": [
+        "ed25519"
+      ]
+    },
+    "version": {
+      "app": "0"
+    }
+  },
+  "validators": [
+    {
+      "address": "",
+      "pub_key": {
+        "type": "tendermint/PubKeyEd25519",
+        "value": "eDLfozAqoE7vCAcmN49wqbifBOV/HdCi+YnBTGUz92g="
+      },
+      "power": "10",
+      "name": "node0"
+    },
+    {
+      "address": "",
+      "pub_key": {
+        "type": "tendermint/PubKeyEd25519",
+        "value": "41c1F2P5eSRtEEeJ+tca+AMYPSye4dyZpoCM1Xzxagw="
+      },
+      "power": "10",
+      "name": "node1"
+    },
+    {
+      "address": "",
+      "pub_key": {
+        "type": "tendermint/PubKeyEd25519",
+        "value": "GIp1hCcMINRLPC30SteQj1Q81jPyWkusQzfJk+q050E="
+      },
+      "power": "10",
+      "name": "node2"
+    },
+    {
+      "address": "",
+      "pub_key": {
+        "type": "tendermint/PubKeyEd25519",
+        "value": "WTJ5fUNrruLc5rrVmbQn/s3G0fIX4kyQk/8e9EAzTW4="
+      },
+      "power": "10",
+      "name": "node3"
+    }
+  ],
+  "app_hash": ""
+}

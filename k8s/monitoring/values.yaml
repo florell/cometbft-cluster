@@ -1,0 +1,17 @@
+grafana:
+  enabled: true
+  defaultDashboardsEnabled: false
+  adminPassword: prom-operator
+
+  dashboardsProvider:
+    enabled: true
+
+  extraConfigmapMounts:
+    - name: tendermint-dashboard
+      mountPath: /var/lib/grafana/dashboards/tendermint/tendermint.json
+      subPath: tendermint.json
+      configMap: tendermint-dashboard
+    - name: tendermint-dashboards-provider
+      mountPath: /etc/grafana/provisioning/dashboards/dashboards.yaml
+      subPath: dashboards.yaml
+      configMap: tendermint-dashboards-provider

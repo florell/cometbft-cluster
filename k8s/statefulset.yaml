@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: tendermint
+spec:
+  serviceName: "tendermint"
+  replicas: 4
+  selector:
+    matchLabels:
+      app: tendermint
+  template:
+    metadata:
+      labels:
+        app: tendermint
+    spec:
+      containers:
+        - name: tendermint
+          image: tendermint:local
+          imagePullPolicy: Never
+          ports:
+            - name: p2p
+              containerPort: 26656
+            - name: rpc
+              containerPort: 26657
+            - name: prometheus
+              containerPort: 26660
+          env:
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+          volumeMounts:
+            - name: config-volume
+              mountPath: /mnt/config
+      volumes:
+        - name: config-volume
+          hostPath:
+            path: /mnt/config
+            type: Directory

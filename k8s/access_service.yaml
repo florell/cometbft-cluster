@@ -1,0 +1,17 @@
+# сервис для доступа к нодам
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: tendermint-rpc
+spec:
+  selector:
+    app: tendermint
+  ports:
+    - name: p2p
+      port: 26656
+      targetPort: 26656
+    - name: rpc
+      port: 26657
+      targetPort: 26657
+  type: NodePort

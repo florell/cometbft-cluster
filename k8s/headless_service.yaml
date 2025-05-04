@@ -1,0 +1,19 @@
+# сервис для обеспечения резолвинга DNS имен в локальной сети
+apiVersion: v1
+kind: Service
+metadata:
+  name: tendermint
+  labels:
+    app: tendermint 
+spec:
+  clusterIP: None
+  selector:
+    app: tendermint
+  ports:
+    - name: p2p
+      port: 26656
+    - name: rpc
+      port: 26657
+    - name: prometheus
+      port: 26660
+      targetPort: prometheus
