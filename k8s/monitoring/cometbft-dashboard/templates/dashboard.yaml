@@ -1,10 +1,10 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: tendermint-dashboard
+  name: cometbft-dashboard
   namespace: monitoring
   labels:
     grafana_dashboard: "1"
 data:
-  tendermint.json: |-
-{{ .Files.Get "dashboards/tendermint.json" | indent 4 }}
+  cometbft.json: |-
+{{ .Files.Get "dashboards/cometbft.json" | indent 4 }}

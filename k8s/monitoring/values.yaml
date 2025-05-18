@@ -1,3 +1,7 @@
+prometheus:
+  prometheusSpec:
+    maximumStartupDurationSeconds: 120
+
 grafana:
   enabled: true
   defaultDashboardsEnabled: false
@@ -7,11 +11,11 @@ grafana:
     enabled: true
 
   extraConfigmapMounts:
-    - name: tendermint-dashboard
-      mountPath: /var/lib/grafana/dashboards/tendermint/tendermint.json
-      subPath: tendermint.json
-      configMap: tendermint-dashboard
-    - name: tendermint-dashboards-provider
+    - name: cometbft-dashboard
+      mountPath: /var/lib/grafana/dashboards/cometbft/cometbft.json
+      subPath: cometbft.json
+      configMap: cometbft-dashboard
+    - name: cometbft-dashboards-provider
       mountPath: /etc/grafana/provisioning/dashboards/dashboards.yaml
       subPath: dashboards.yaml
-      configMap: tendermint-dashboards-provider
+      configMap: cometbft-dashboards-provider

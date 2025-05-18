@@ -1,14 +1,14 @@
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
-  name: tendermint
+  name: cometbft
   namespace: monitoring
   labels:
     release: monitoring
 spec:
   selector:
     matchLabels:
-      app: tendermint
+      app: cometbft
   namespaceSelector:
     matchNames:
       - default

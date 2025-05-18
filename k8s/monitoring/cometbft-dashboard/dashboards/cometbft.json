@@ -37,7 +37,7 @@
       },
       "targets": [
         {
-          "expr": "tendermint_consensus_height{chain_id=\"$chain_id\", hostname=\"$hostname\"}",
+          "expr": "cometbft_consensus_height{chain_id=\"$chain_id\", hostname=\"$hostname\"}",
           "refId": "A"
         }
       ],
@@ -65,7 +65,7 @@
       },
       "targets": [
         {
-          "expr": "tendermint_mempool_size{chain_id=\"$chain_id\", hostname=\"$hostname\"}",
+          "expr": "cometbft_mempool_size{chain_id=\"$chain_id\", hostname=\"$hostname\"}",
           "refId": "A"
         }
       ],
@@ -93,7 +93,7 @@
       },
       "targets": [
         {
-          "expr": "tendermint_p2p_peers{chain_id=\"$chain_id\", hostname=\"$hostname\"}",
+          "expr": "cometbft_p2p_peers{chain_id=\"$chain_id\", hostname=\"$hostname\"}",
           "refId": "A"
         }
       ],
@@ -121,7 +121,7 @@
       },
       "targets": [
         {
-          "expr": "tendermint_consensus_block_size_bytes{chain_id=\"$chain_id\", hostname=\"$hostname\"}",
+          "expr": "cometbft_consensus_block_size_bytes{chain_id=\"$chain_id\", hostname=\"$hostname\"}",
           "refId": "A"
         }
       ],
@@ -149,7 +149,7 @@
       },
       "targets": [
         {
-          "expr": "rate(tendermint_state_block_processing_time_sum{chain_id=\"$chain_id\", hostname=\"$hostname\"}[5m]) / rate(tendermint_state_block_processing_time_count{chain_id=\"$chain_id\", hostname=\"$hostname\"}[5m])",
+          "expr": "rate(cometbft_state_block_processing_time_sum{chain_id=\"$chain_id\", hostname=\"$hostname\"}[5m]) / rate(cometbft_state_block_processing_time_count{chain_id=\"$chain_id\", hostname=\"$hostname\"}[5m])",
           "refId": "A"
         }
       ],
@@ -177,7 +177,7 @@
       },
       "targets": [
         {
-          "expr": "tendermint_consensus_total_txs{chain_id=\"$chain_id\", hostname=\"$hostname\"}",
+          "expr": "cometbft_consensus_total_txs{chain_id=\"$chain_id\", hostname=\"$hostname\"}",
           "refId": "A"
         }
       ],
@@ -205,7 +205,7 @@
       },
       "targets": [
         {
-          "expr": "tendermint_consensus_validators{chain_id=\"$chain_id\", hostname=\"$hostname\"}",
+          "expr": "cometbft_consensus_validators{chain_id=\"$chain_id\", hostname=\"$hostname\"}",
           "refId": "A"
         }
       ],
@@ -233,7 +233,7 @@
       },
       "targets": [
         {
-          "expr": "tendermint_consensus_validators_power{chain_id=\"$chain_id\", hostname=\"$hostname\"}",
+          "expr": "cometbft_consensus_validators_power{chain_id=\"$chain_id\", hostname=\"$hostname\"}",
           "refId": "A"
         }
       ],
@@ -261,7 +261,7 @@
       },
       "targets": [
         {
-          "expr": "tendermint_consensus_byzantine_validators{chain_id=\"$chain_id\", hostname=\"$hostname\"}",
+          "expr": "cometbft_consensus_byzantine_validators{chain_id=\"$chain_id\", hostname=\"$hostname\"}",
           "refId": "A"
         }
       ],
@@ -289,7 +289,7 @@
       },
       "targets": [
         {
-          "expr": "tendermint_consensus_byzantine_validators_power{chain_id=\"$chain_id\", hostname=\"$hostname\"}",
+          "expr": "cometbft_consensus_byzantine_validators_power{chain_id=\"$chain_id\", hostname=\"$hostname\"}",
           "refId": "A"
         }
       ],
@@ -301,7 +301,7 @@
   "schemaVersion": 27,
   "style": "dark",
   "tags": [
-    "tendermint",
+    "cometbft",
     "cosmos"
   ],
   "templating": {
@@ -328,7 +328,7 @@
         "name": "hostname",
         "type": "query",
         "datasource": "${DS}",
-        "query": "label_values(tendermint_consensus_height, hostname)",
+        "query": "label_values(cometbft_consensus_height, hostname)",
         "refresh": 2,
         "label": "Hostname"
       }
@@ -340,6 +340,6 @@
   },
   "timepicker": {},
   "timezone": "",
-  "title": "Tendermint Dashboard (Auto-generated)",
+  "title": "cometbft Dashboard (Auto-generated)",
   "version": 1
 }

@@ -1,39 +1,104 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: tendermint
+  name: cometbft
 spec:
-  serviceName: "tendermint"
+  serviceName: cometbft
   replicas: 4
   selector:
     matchLabels:
-      app: tendermint
+      app: cometbft
+
   template:
     metadata:
       labels:
-        app: tendermint
+        app: cometbft
     spec:
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+
+      initContainers:
+      - name: init-config
+        image: busybox:1.32
+        command:
+          - sh
+          - -c
+          - |
+            ORD=${POD_NAME##*-}
+            echo "copying config for node${ORD}…"
+            cp -r /host-config/node${ORD}/* /cometbft
+        env:
+          - name: POD_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.name
+        volumeMounts:
+          - name: host-config
+            mountPath: /host-config
+          - name: runtime
+            mountPath: /cometbft
       containers:
-        - name: tendermint
-          image: tendermint:local
-          imagePullPolicy: Never
+        # ---------- ABCI ----------
+        - name: abci
+          image: config-abci:local
           ports:
-            - name: p2p
-              containerPort: 26656
-            - name: rpc
-              containerPort: 26657
-            - name: prometheus
-              containerPort: 26660
+            - containerPort: 26658
           env:
+            # один и тот же TMHOME, он уже смонтирован как /cometbft
+            - name: TMHOME
+              value: /cometbft
             - name: POD_NAME
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.name
           volumeMounts:
-            - name: config-volume
-              mountPath: /mnt/config
+            - name: runtime
+              mountPath: /cometbft
+
+        # ---------- cometbft ----------
+        - name: cometbft
+          image: cometbft/cometbft:v0.37.15
+          securityContext:
+            runAsUser: 1000
+          ports:
+            - containerPort: 26656
+              name: p2p
+            - containerPort: 26657
+              name: rpc
+            - containerPort: 26660
+              name: prometheus
+          env:
+            - name: TMHOME
+              value: /cometbft
+            - name: POD_ORDINAL
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.labels['apps.kubernetes.io/pod-index']
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+          command:
+            - cometbft
+            - start
+            - --home
+            - /cometbft
+            - --rpc.laddr
+            - tcp://0.0.0.0:26657
+            - --proxy_app
+            - tcp://0.0.0.0:26658
+          volumeMounts:
+            - name: runtime
+              mountPath: /cometbft
+      # общий том, где скрипт-генератор собрал узлы
       volumes:
-        - name: config-volume
-          hostPath:
-            path: /mnt/config
-            type: Directory
+        # сюда скриптом generate-configs.sh положена папка config/node0…node3
+      - name: host-config
+        hostPath:
+          path: /mnt/config
+          type: Directory
+        # runtime-том для «своего» nodeX
+      - name: runtime
+        emptyDir: {}

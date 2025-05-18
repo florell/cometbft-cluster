@@ -1,9 +1,13 @@
 #!/bin/bash
 
-minikube kubectl -- delete service tendermint
-minikube kubectl -- delete statefulset tendermint
-minikube kubectl -- delete pod -l app=tendermint --ignore-not-found
-minikube kubectl -- delete service tendermint-rpc
+minikube kubectl -- delete service cometbft
+minikube kubectl -- delete statefulset cometbft
+minikube kubectl -- delete pod -l app=cometbft --ignore-not-found --grace-period=0 --force
+minikube kubectl -- delete service cometbft-rpc
+
+minikube kubectl -- delete service cometbft-rpc-gateway
+minikube kubectl -- delete deployment cometbft-rpc-gateway
+minikube kubectl -- delete  configmap cometbft-rpc-gateway-conf
 kill $(cat .minikube_mount.pid)
 
 rm -rf config

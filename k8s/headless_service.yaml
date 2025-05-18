@@ -2,13 +2,13 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: tendermint
+  name: cometbft
   labels:
-    app: tendermint 
+    app: cometbft 
 spec:
   clusterIP: None
   selector:
-    app: tendermint
+    app: cometbft
   ports:
     - name: p2p
       port: 26656

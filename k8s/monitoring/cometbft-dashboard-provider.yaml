@@ -1,14 +1,14 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: tendermint-dashboards-provider
+  name: cometbft-dashboards-provider
   namespace: monitoring
 data:
   dashboards.yaml: |
     apiVersion: 1
     providers:
-      - name: 'tendermint'
-        folder: 'Tendermint'
+      - name: 'cometbft'
+        folder: 'cometbft'
         type: file
         options:
-          path: /var/lib/grafana/dashboards/tendermint
+          path: /var/lib/grafana/dashboards/cometbft

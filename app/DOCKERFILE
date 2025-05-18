@@ -1,0 +1,31 @@
+################   build stage   ################
+FROM golang:1.24-alpine AS builder
+
+WORKDIR /app
+
+# зависимости
+COPY go.mod go.sum ./
+RUN go mod download
+
+# исходники (включая cmd/)
+COPY . .
+
+# собираем бинарь из ./cmd -> /app/config-abci
+RUN CGO_ENABLED=0 GOOS=linux go build -o config-abci ./cmd
+
+
+################  runtime stage  ################
+FROM alpine:3.21
+
+# non-root пользователь (как в официальных образах kube-prometheus-stack)
+RUN adduser -D -H -u 472 app
+USER 472
+
+# куда будем монтировать volume
+WORKDIR /app
+
+# сам бинарь (точно туда же, где его ждёт StatefulSet)
+COPY --from=builder /app/config-abci ./config-abci
+
+EXPOSE 26658
+ENTRYPOINT ["./config-abci"]

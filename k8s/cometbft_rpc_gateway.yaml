@@ -1,0 +1,109 @@
+# -----------------------------------------------------------
+# ConfigMap: nginx.conf динамически формирует хост узла
+# -----------------------------------------------------------
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cometbft-rpc-gateway-conf
+data:
+  nginx.conf: |
+    events {}
+
+    http {
+        resolver kube-dns.kube-system.svc.cluster.local valid=10s;
+
+        # 1. upstream с балансировкой
+        upstream cometbft_cluster {
+            server cometbft-0.cometbft.default.svc.cluster.local:26657;
+            server cometbft-1.cometbft.default.svc.cluster.local:26657;
+            server cometbft-2.cometbft.default.svc.cluster.local:26657;
+            server cometbft-3.cometbft.default.svc.cluster.local:26657;
+        }
+
+        # 2. map: если ?node=X задан -> использовать ту ноду, иначе пусто
+        map $arg_node $node_index {
+            default       "";
+            "~^[0-9]+$"   $arg_node;
+        }
+
+        # 3. map: если $node_index пустой -> используем upstream
+        map $node_index $upstream {
+            ""            "cluster";
+            "0"           "cometbft-0.cometbft.default.svc.cluster.local:26657";
+            "1"           "cometbft-1.cometbft.default.svc.cluster.local:26657";
+            "2"           "cometbft-2.cometbft.default.svc.cluster.local:26657";
+            "3"           "cometbft-3.cometbft.default.svc.cluster.local:26657";
+        }
+
+        server {
+            listen 80 default_server;
+
+            # proxy_pass на указанный хост или на upstream
+            location / {
+                set $target_host "";
+                if ($upstream = "cluster") {
+                    proxy_pass http://cometbft_cluster$request_uri;
+                }
+                if ($upstream != "cluster") {
+                    proxy_pass http://$upstream$request_uri;
+                }
+
+                proxy_set_header Host $host;
+                proxy_http_version 1.1;
+            }
+
+            location = /healthz { return 200 "ok\n"; }
+        }
+    }
+
+
+
+---
+# -----------------------------------------------------------
+# Deployment nginx-gateway
+# -----------------------------------------------------------
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cometbft-rpc-gateway
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cometbft-rpc-gateway
+  template:
+    metadata:
+      labels:
+        app: cometbft-rpc-gateway
+    spec:
+      containers:
+        - name: nginx
+          image: nginx:1.25-alpine
+          ports:
+            - containerPort: 80
+          volumeMounts:
+            - name: cfg
+              mountPath: /etc/nginx/nginx.conf
+              subPath: nginx.conf
+      volumes:
+        - name: cfg
+          configMap:
+            name: cometbft-rpc-gateway-conf
+---
+# -----------------------------------------------------------
+# сервис NodePort — прокидывает наружу порт 30057 -> 80
+# -----------------------------------------------------------
+apiVersion: v1
+kind: Service
+metadata:
+  name: cometbft-rpc-gateway
+spec:
+  type: NodePort          # для minikube / on-prem
+  selector:
+    app: cometbft-rpc-gateway
+  ports:
+    - name: http
+      port: 80
+      targetPort: 80
+      nodePort: 30057     # фиксация порта
+      protocol: TCP
